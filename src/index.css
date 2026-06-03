@@ -49,8 +49,7 @@ body {
 }
 
 .animate-title {
-  animation: title-in 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  animation-delay: var(--delay, 0ms);
+  animation: none;
 }
 
 .animate-line {
@@ -59,9 +58,7 @@ body {
 }
 
 .animate-profile {
-  animation:
-    profile-in 960ms cubic-bezier(0.16, 1, 0.3, 1) 260ms both,
-    profile-float 6s ease-in-out 1.3s infinite;
+  animation: none;
 }
 
 .animate-marker {
@@ -132,9 +129,7 @@ body {
   background:
     linear-gradient(90deg, rgba(255, 255, 255, 0.24), transparent 8%, transparent 86%, rgba(255, 255, 255, 0.18)),
     linear-gradient(180deg, transparent 0%, rgba(59, 130, 246, 0.18) 68%, rgba(124, 58, 237, 0.28) 100%);
-  animation:
-    column-rise 1.4s ease both,
-    column-pulse 5.8s ease-in-out infinite;
+  animation: column-rise 1.4s ease both;
   animation-delay: calc(var(--column-index) * 40ms);
 }
 
@@ -145,8 +140,6 @@ body {
   filter: blur(9px);
   opacity: 0.34;
   transform: translateX(-42%);
-  animation: column-slide 7s ease-in-out infinite;
-  animation-delay: calc(var(--column-index) * -180ms);
 }
 
 .project-card {
@@ -359,26 +352,6 @@ body {
   }
 }
 
-@keyframes profile-in {
-  from {
-    opacity: 0;
-    transform: translateX(34px) scale(0.985);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-  }
-}
-
-@keyframes profile-float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
 @keyframes marker-in {
   from {
     opacity: 0;
@@ -454,24 +427,6 @@ body {
   }
 }
 
-@keyframes column-pulse {
-  0%, 100% {
-    filter: brightness(0.86);
-  }
-  45% {
-    filter: brightness(1.32);
-  }
-}
-
-@keyframes column-slide {
-  0%, 100% {
-    transform: translateX(-58%);
-  }
-  50% {
-    transform: translateX(58%);
-  }
-}
-
 @keyframes card-in {
   from {
     opacity: 0;
@@ -528,12 +483,6 @@ body {
   }
 
   .grid-column {
-    animation:
-      column-rise 1.4s ease both,
-      column-pulse 5.8s ease-in-out infinite !important;
-  }
-
-  .grid-column-light {
-    animation: column-slide 7s ease-in-out infinite !important;
+    animation: column-rise 1.4s ease both !important;
   }
 }

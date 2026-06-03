@@ -44,7 +44,11 @@ function ProjectCard({
         <img
           alt={label}
           className="project-image absolute inset-0 h-full w-full max-w-none object-cover"
+          decoding="async"
+          height={112}
+          loading="lazy"
           src={image}
+          width={175}
         />
         <span className="project-image-shade" />
       </div>

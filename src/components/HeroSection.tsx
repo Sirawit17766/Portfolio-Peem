@@ -77,7 +77,12 @@ export default function HeroSection() {
         <img
           alt="Sirawit Tathip"
           className="absolute inset-0 h-full w-full max-w-none object-cover"
+          decoding="async"
+          fetchPriority="high"
+          height={837}
+          loading="eager"
           src={imgImage1}
+          width={662}
         />
       </div>
     </section>

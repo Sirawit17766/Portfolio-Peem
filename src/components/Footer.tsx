@@ -16,7 +16,7 @@ export default function Footer() {
         } as CSSProperties
       }
     >
-      <span className="font-inter text-[12px] font-normal text-[#334155]">
+      <span className="font-inter text-[12px] font-normal text-[#94a3b8]">
         (c) 2025 Sirawit Tathip
       </span>
     </footer>
