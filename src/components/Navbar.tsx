@@ -2,32 +2,40 @@ const navLinks = [
   { label: "About", active: true },
   { label: "Projects", active: false },
   { label: "Tech Stack", active: false },
-  { label: "Contact", active: false },
 ];
 
-export default function Navbar() {
-  return (
-    <nav className="absolute top-0 left-0 w-full flex items-center justify-between px-[84px] h-[72px] z-50">
-      {/* Logo */}
-      <span className="font-bold text-white text-[16px] font-inter tracking-wide">
-        ST
-      </span>
+type NavbarProps = {
+  onContactClick: () => void;
+};
 
-      {/* Nav links */}
+export default function Navbar({ onContactClick }: NavbarProps) {
+  return (
+    <nav className="animate-fade-down absolute left-0 top-0 z-50 flex h-[72px] w-full items-center justify-between px-[84px]">
+      <a className="font-inter text-[16px] font-bold tracking-wide text-white transition-colors hover:text-[#a78bfa]" href="#about">
+        ST
+      </a>
+
       <div className="flex items-center gap-[120px]">
         {navLinks.map((link) => (
           <a
             key={link.label}
             href={`#${link.label.toLowerCase().replace(" ", "-")}`}
-            className={`text-[14px] font-inter cursor-pointer transition-colors ${
+            className={`font-inter text-[14px] transition-colors ${
               link.active
-                ? "text-[#a78bfa] font-semibold"
-                : "text-[#94a3b8] font-normal hover:text-white"
+                ? "font-semibold text-[#a78bfa]"
+                : "font-normal text-[#94a3b8] hover:text-white"
             }`}
           >
             {link.label}
           </a>
         ))}
+        <button
+          className="font-inter text-[14px] font-normal text-[#94a3b8] transition-colors hover:text-white"
+          type="button"
+          onClick={onContactClick}
+        >
+          Contact
+        </button>
       </div>
     </nav>
   );

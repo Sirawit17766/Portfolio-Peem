@@ -1,65 +1,71 @@
+import type { CSSProperties } from "react";
 import { imgImage2, imgImage3, imgImage4, imgImage5 } from "../assets/images";
 
-interface ProjectCard {
+type ProjectCardProps = {
   label: string;
   image: string;
+  tag: string;
   left: number;
   top: number;
-  imgTop: number;
-  imgLeft: number;
-}
+  imageOffsetTop?: number;
+  imageOffsetLeft?: number;
+  delay: number;
+};
 
-const projects: ProjectCard[] = [
-  { label: "Figma Design Netflix", image: imgImage2, left: 796, top: 177, imgTop: 198, imgLeft: 808 },
-  { label: "GEARX",                image: imgImage3, left: 1007, top: 177, imgTop: 200, imgLeft: 1019 },
-  { label: "Moblie App",           image: imgImage4, left: 1220, top: 177, imgTop: 200, imgLeft: 1231 },
-  { label: "GROUP WEB-ECOMMERCE",  image: imgImage5, left: 1007, top: 402, imgTop: 428, imgLeft: 1019 },
+const projects: Omit<ProjectCardProps, "delay">[] = [
+  { label: "Figma Design Netflix", tag: "UI Design", image: imgImage2, left: 796, top: 177, imageOffsetTop: 18 },
+  { label: "GEARX", tag: "Web App", image: imgImage3, left: 1007, top: 177, imageOffsetTop: 18 },
+  { label: "Mobile App", tag: "Application", image: imgImage4, left: 1220, top: 177, imageOffsetTop: 18, imageOffsetLeft: 11 },
+  { label: "GROUP WEB-ECOMMERCE", tag: "E-Commerce", image: imgImage5, left: 1007, top: 402, imageOffsetTop: 18 },
 ];
+
+function ProjectCard({
+  label,
+  image,
+  tag,
+  left,
+  top,
+  imageOffsetTop = 18,
+  imageOffsetLeft = 12,
+  delay,
+}: ProjectCardProps) {
+  return (
+    <a
+      className="project-card absolute z-20 block h-[212px] w-[197px] overflow-hidden rounded-[12px]"
+      href="#projects"
+      style={{ left, top, "--delay": `${delay}ms` } as CSSProperties}
+      aria-label={label}
+    >
+      <span className="project-card-glow" />
+      <div
+        className="absolute overflow-hidden rounded-[7px] shadow-[0px_8px_24px_rgba(0,0,0,0.36)]"
+        style={{ left: imageOffsetLeft, top: imageOffsetTop, width: 175, height: 112 }}
+      >
+        <img
+          alt={label}
+          className="project-image absolute inset-0 h-full w-full max-w-none object-cover"
+          src={image}
+        />
+        <span className="project-image-shade" />
+      </div>
+
+      <span className="absolute bottom-[54px] left-[14px] inline-flex rounded-full bg-[rgba(97,218,251,0.12)] px-[9px] py-[4px] font-inter text-[10px] font-semibold uppercase tracking-[0.08em] text-[#61dafb]">
+        {tag}
+      </span>
+      <span className="absolute bottom-[25px] left-[14px] right-[30px] block font-inter text-[14px] font-bold leading-tight text-white">
+        {label}
+      </span>
+      <span className="project-arrow" aria-hidden="true" />
+    </a>
+  );
+}
 
 export default function ProjectCards() {
   return (
-    <>
-      {projects.map((p) => (
-        <div key={p.label}>
-          {/* Card bg */}
-          <div
-            className="absolute rounded-[12px]"
-            style={{
-              left: p.left,
-              top: p.top,
-              width: 197,
-              height: 212,
-              background: "#222323",
-              border: "1px solid #61dafb",
-            }}
-          />
-          {/* Project image */}
-          <div
-            className="absolute rounded-[6px] overflow-hidden"
-            style={{
-              left: p.imgLeft,
-              top: p.imgTop,
-              width: 175,
-              height: 112,
-              border: "1px solid rgba(58,207,237,0.5)",
-              boxShadow: "0px 4px 20.9px 3px rgba(0,0,0,0.25)",
-            }}
-          >
-            <img
-              alt={p.label}
-              className="absolute inset-0 w-full h-full object-cover pointer-events-none rounded-[6px] max-w-none"
-              src={p.image}
-            />
-          </div>
-          {/* Label */}
-          <p
-            className="absolute font-bold text-white text-[14px] font-inter whitespace-nowrap"
-            style={{ left: p.left + 17, top: p.top + 163 }}
-          >
-            {p.label}
-          </p>
-        </div>
+    <section id="projects" className="contents">
+      {projects.map((project, index) => (
+        <ProjectCard key={project.label} {...project} delay={440 + index * 120} />
       ))}
-    </>
+    </section>
   );
 }
