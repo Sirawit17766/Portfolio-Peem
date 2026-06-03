@@ -27,6 +27,31 @@ const clean = (value: unknown, fallback: string, maxLength: number) => {
   return value.trim().slice(0, maxLength) || fallback;
 };
 
+const withProductionHeaders = (request: Request, response: Response) => {
+  const headers = new Headers(response.headers);
+  const pathname = new URL(request.url).pathname;
+  const isHtml =
+    headers.get("Content-Type")?.includes("text/html") ||
+    pathname === "/" ||
+    !pathname.includes(".");
+
+  headers.set("X-Robots-Tag", "index, follow");
+  headers.set("X-Content-Type-Options", "nosniff");
+  headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  headers.set("X-Frame-Options", "SAMEORIGIN");
+  headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+
+  if (isHtml) {
+    headers.set("Cache-Control", "public, max-age=0, must-revalidate");
+  }
+
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+};
+
 const sendContact = async (request: Request, env: Env) => {
   if (request.method !== "POST") {
     return json({ error: "Method not allowed" }, 405);
@@ -88,6 +113,7 @@ export default {
       return sendContact(request, env);
     }
 
-    return env.ASSETS.fetch(request);
+    const response = await env.ASSETS.fetch(request);
+    return withProductionHeaders(request, response);
   },
 };
