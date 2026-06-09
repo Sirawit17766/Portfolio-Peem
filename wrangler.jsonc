@@ -2,12 +2,13 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "portfolio-peem",
   "main": "src/worker.ts",
+  "pages_build_output_dir": "dist/client",
   "compatibility_date": "2026-06-03",
   "observability": {
     "enabled": true
   },
   "assets": {
-    "binding": "ASSETS",
+    "binding": "PORTFOLIO_ASSETS",
     "run_worker_first": [
       "/api/contact"
     ],

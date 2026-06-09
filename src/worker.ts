@@ -1,5 +1,5 @@
 type Env = {
-  ASSETS: {
+  PORTFOLIO_ASSETS: {
     fetch: (request: Request) => Promise<Response>;
   };
   DISCORD_WEBHOOK_URL?: string;
@@ -113,7 +113,7 @@ export default {
       return sendContact(request, env);
     }
 
-    const response = await env.ASSETS.fetch(request);
+    const response = await env.PORTFOLIO_ASSETS.fetch(request);
     return withProductionHeaders(request, response);
   },
 };
