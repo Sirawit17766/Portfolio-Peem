@@ -3,15 +3,13 @@ import type { CSSProperties } from "react";
 export default function Footer() {
   return (
     <footer
-      className="animate-fade-up absolute z-20 flex items-center justify-center rounded-[12px] border"
+      className="footer-plaque animate-fade-up absolute z-20 flex items-center justify-center rounded-[12px] border"
       style={
         {
-          left: 19,
-          top: 944,
-          width: 205,
-          height: 60,
-          background: "#0f172a",
-          borderColor: "rgba(124,58,237,0.25)",
+          left: 72,
+          top: 928,
+          width: 258,
+          height: 58,
           "--delay": "980ms",
         } as CSSProperties
       }

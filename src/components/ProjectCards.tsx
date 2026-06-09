@@ -7,16 +7,55 @@ type ProjectCardProps = {
   tag: string;
   left: number;
   top: number;
+  summary: string;
+  year: string;
+  variant: "featured" | "compact";
   imageOffsetTop?: number;
   imageOffsetLeft?: number;
   delay: number;
 };
 
 const projects: Omit<ProjectCardProps, "delay">[] = [
-  { label: "Figma Design Netflix", tag: "UI Design", image: imgImage2, left: 796, top: 177, imageOffsetTop: 18 },
-  { label: "GEARX", tag: "Web App", image: imgImage3, left: 1007, top: 177, imageOffsetTop: 18 },
-  { label: "Mobile App", tag: "Application", image: imgImage4, left: 1220, top: 177, imageOffsetTop: 18, imageOffsetLeft: 11 },
-  { label: "GROUP WEB-ECOMMERCE", tag: "E-Commerce", image: imgImage5, left: 1007, top: 402, imageOffsetTop: 18 },
+  {
+    label: "Figma Design Netflix",
+    tag: "UI Design",
+    summary: "Interface study with dense visual systems",
+    year: "2024",
+    image: imgImage2,
+    left: 920,
+    top: 184,
+    variant: "featured",
+  },
+  {
+    label: "GEARX",
+    tag: "Web App",
+    summary: "Landing and commerce experience",
+    year: "2024",
+    image: imgImage3,
+    left: 920,
+    top: 392,
+    variant: "compact",
+  },
+  {
+    label: "Mobile App",
+    tag: "Application",
+    summary: "Mobile-first product flow",
+    year: "2023",
+    image: imgImage4,
+    left: 920,
+    top: 478,
+    variant: "compact",
+  },
+  {
+    label: "GROUP WEB-ECOMMERCE",
+    tag: "E-Commerce",
+    summary: "Catalog and storefront interface",
+    year: "2023",
+    image: imgImage5,
+    left: 920,
+    top: 564,
+    variant: "compact",
+  },
 ];
 
 function ProjectCard({
@@ -25,21 +64,21 @@ function ProjectCard({
   tag,
   left,
   top,
-  imageOffsetTop = 18,
-  imageOffsetLeft = 12,
+  summary,
+  year,
+  variant,
   delay,
 }: ProjectCardProps) {
   return (
     <a
-      className="project-card absolute z-20 block h-[212px] w-[197px] overflow-hidden rounded-[12px]"
+      className={`project-card project-card--${variant} absolute z-20 block overflow-hidden rounded-[12px]`}
       href="#projects"
       style={{ left, top, "--delay": `${delay}ms` } as CSSProperties}
       aria-label={label}
     >
       <span className="project-card-glow" />
       <div
-        className="absolute overflow-hidden rounded-[7px] shadow-[0px_8px_24px_rgba(0,0,0,0.36)]"
-        style={{ left: imageOffsetLeft, top: imageOffsetTop, width: 175, height: 112 }}
+        className="project-card-media absolute overflow-hidden rounded-[9px] shadow-[0px_10px_28px_rgba(0,0,0,0.38)]"
       >
         <img
           alt={label}
@@ -48,16 +87,22 @@ function ProjectCard({
           height={112}
           loading="lazy"
           src={image}
-          width={175}
+          width={190}
         />
         <span className="project-image-shade" />
       </div>
 
-      <span className="absolute bottom-[54px] left-[14px] inline-flex rounded-full bg-[rgba(97,218,251,0.12)] px-[9px] py-[4px] font-inter text-[10px] font-semibold uppercase tracking-[0.08em] text-[#61dafb]">
+      <span className="project-tag absolute inline-flex rounded-full bg-[rgba(97,218,251,0.14)] px-[9px] py-[4px] font-inter text-[10px] font-semibold uppercase tracking-[0.08em] text-[#61dafb]">
         {tag}
       </span>
-      <span className="absolute bottom-[25px] left-[14px] right-[30px] block font-inter text-[14px] font-bold leading-tight text-white">
+      <span className="project-year absolute font-mono text-[11px] font-bold text-[#475569]">
+        {year}
+      </span>
+      <span className="project-title absolute block font-inter font-bold leading-tight text-white">
         {label}
+      </span>
+      <span className="project-summary absolute block font-inter font-medium leading-snug text-[#94a3b8]">
+        {summary}
       </span>
       <span className="project-arrow" aria-hidden="true" />
     </a>
@@ -67,6 +112,14 @@ function ProjectCard({
 export default function ProjectCards() {
   return (
     <section id="projects" className="contents">
+      <div className="projects-panel absolute z-[8]" aria-hidden="true" />
+      <div
+        className="animate-fade-up absolute z-20"
+        style={{ left: 920, top: 112, "--delay": "300ms" } as CSSProperties}
+      >
+        <p className="section-eyebrow">Selected work</p>
+        <h2 className="section-heading">Projects</h2>
+      </div>
       {projects.map((project, index) => (
         <ProjectCard key={project.label} {...project} delay={440 + index * 120} />
       ))}

@@ -24,8 +24,8 @@ type Tech = {
   imageMark?: string;
 };
 
-const COL_X = [887, 1065, 1243];
-const ROW_Y = [808, 878, 948];
+const COL_X = [920, 1082, 1244];
+const ROW_Y = [772, 830, 888];
 
 const techs: Tech[] = [
   {
@@ -127,7 +127,7 @@ function TechItem({ tech, index }: { tech: Tech; index: number }) {
 
   return (
     <div
-      className="tech-item absolute z-20 flex h-[56px] w-[160px] items-center rounded-[12px] border px-[10px]"
+      className="tech-item absolute z-20 flex h-[50px] w-[150px] items-center rounded-[12px] border px-[10px]"
       style={
         {
           left: x,
@@ -138,7 +138,7 @@ function TechItem({ tech, index }: { tech: Tech; index: number }) {
         } as CSSProperties
       }
     >
-      <span className="relative mr-[18px] grid h-[32px] w-[32px] place-items-center overflow-hidden rounded-full">
+      <span className="relative mr-[14px] grid h-[30px] w-[30px] place-items-center overflow-hidden rounded-full">
         <img alt="" className="absolute inset-0 h-full w-full max-w-none" src={tech.icon} />
         {tech.imageMark ? (
           <img alt="" className="relative h-[16px] w-[16px]" src={tech.imageMark} />
@@ -149,7 +149,7 @@ function TechItem({ tech, index }: { tech: Tech; index: number }) {
         )}
       </span>
 
-      <span className="font-inter text-[14px] font-semibold leading-none" style={{ color: tech.color }}>
+      <span className="font-inter text-[13px] font-semibold leading-none" style={{ color: tech.color }}>
         {tech.label}
       </span>
     </div>
@@ -159,15 +159,16 @@ function TechItem({ tech, index }: { tech: Tech; index: number }) {
 export default function TechStack() {
   return (
     <section id="tech-stack" className="contents">
+      <div className="tech-panel absolute z-[8]" aria-hidden="true" />
       <h2
         className="animate-fade-up absolute z-20 whitespace-nowrap font-inter text-[32px] font-bold text-white"
-        style={{ left: 887, top: 738, "--delay": "620ms" } as CSSProperties}
+        style={{ left: 920, top: 704, "--delay": "620ms" } as CSSProperties}
       >
         Tech Stack
       </h2>
       <p
-        className="animate-fade-up absolute z-20 whitespace-nowrap font-inter text-[14px] font-normal text-white"
-        style={{ left: 887, top: 780, "--delay": "700ms" } as CSSProperties}
+        className="animate-fade-up absolute z-20 whitespace-nowrap font-inter text-[14px] font-normal text-[#cbd5e1]"
+        style={{ left: 920, top: 744, "--delay": "700ms" } as CSSProperties}
       >
         Technologies I work with
       </p>
