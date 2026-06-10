@@ -346,10 +346,10 @@ GitHub Actions workflow:
 After the workflow runs successfully, the image will be available at:
 
 ```text
-https://hub.docker.com/r/YOUR_DOCKERHUB_USERNAME/portfolio-blog-api
+https://hub.docker.com/r/YOUR_DOCKER_USERNAME/portfolio-blog-api
 ```
 
-Replace `YOUR_DOCKERHUB_USERNAME` with the Docker Hub username stored in the `DOCKERHUB_USERNAME` GitHub secret.
+Replace `YOUR_DOCKER_USERNAME` with the Docker Hub username stored in the `DOCKER_USERNAME` GitHub secret.
 
 Image tags pushed by CI/CD:
 
@@ -364,8 +364,8 @@ sha-GITHUB_COMMIT_SHA
 Add these secrets in GitHub:
 
 ```text
-DOCKERHUB_USERNAME
-DOCKERHUB_TOKEN
+DOCKER_USERNAME
+DOCKER_PASSWORD
 ```
 
 Where to add secrets:
@@ -383,7 +383,7 @@ Do not write Docker Hub username/password/token directly in the workflow file.
 3. Open Security
 4. Create a new Access Token
 5. Copy the token
-6. Save it in GitHub as `DOCKERHUB_TOKEN`
+6. Save it in GitHub as `DOCKER_PASSWORD`
 
 ### CI/CD Flow
 
@@ -416,7 +416,7 @@ docker run -d --name portfolio-blog-api \
   -e MONGODB_URI=mongodb://portfolio-blog-mongo:27017 \
   -e MONGODB_DB_NAME=portfolio_blog \
   -e MONGODB_COLLECTION=posts \
-  YOUR_DOCKERHUB_USERNAME/portfolio-blog-api:latest
+  YOUR_DOCKER_USERNAME/portfolio-blog-api:latest
 ```
 
 Check:
