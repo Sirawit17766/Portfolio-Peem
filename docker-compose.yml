@@ -1,0 +1,53 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: portfolio-blog-api
+    environment:
+      PORT: 4000
+      BLOG_STORAGE: mongo
+      MONGODB_URI: mongodb://mongo:27017
+      MONGODB_DB_NAME: portfolio_blog
+      MONGODB_COLLECTION: posts
+    ports:
+      - "4000:4000"
+    depends_on:
+      mongo:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:4000/health').then((response)=>process.exit(response.ok?0:1)).catch(()=>process.exit(1))"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  mongo:
+    image: mongo:7
+    container_name: portfolio-blog-mongo
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mongosh",
+          "--quiet",
+          "--eval",
+          "db.adminCommand('ping').ok"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  mongo-data:
