@@ -346,10 +346,10 @@ GitHub Actions workflow:
 After the workflow runs successfully, the image will be available at:
 
 ```text
-https://hub.docker.com/r/YOUR_DOCKER_USERNAME/portfolio-blog-api
+https://hub.docker.com/r/sirawit17766/portfolio-blog-api
 ```
 
-Replace `YOUR_DOCKER_USERNAME` with the Docker Hub username stored in the `DOCKER_USERNAME` GitHub secret.
+The Docker Hub username is stored in the `DOCKER_USERNAME` GitHub secret.
 
 Image tags pushed by CI/CD:
 
@@ -416,7 +416,7 @@ docker run -d --name portfolio-blog-api \
   -e MONGODB_URI=mongodb://portfolio-blog-mongo:27017 \
   -e MONGODB_DB_NAME=portfolio_blog \
   -e MONGODB_COLLECTION=posts \
-  YOUR_DOCKER_USERNAME/portfolio-blog-api:latest
+  sirawit17766/portfolio-blog-api:latest
 ```
 
 Check:
