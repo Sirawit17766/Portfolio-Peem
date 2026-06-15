@@ -255,6 +255,12 @@ npm run build
 
 This setup runs the Blog API and MongoDB together with one command.
 
+Service deployment guide for API + MongoDB + Nginx + Cloudflare:
+
+```text
+docs/service-deploy.md
+```
+
 ### Files
 
 - `Dockerfile` builds the API container

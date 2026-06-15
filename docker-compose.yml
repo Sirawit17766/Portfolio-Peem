@@ -1,5 +1,21 @@
+version: "3.8"
+
 services:
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: portfolio-blog-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - api
+    networks:
+      - api_network
+    restart: unless-stopped
+
   api:
+    image: sirawit17766/portfolio-blog-api:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -10,11 +26,12 @@ services:
       MONGODB_URI: mongodb://mongo:27017
       MONGODB_DB_NAME: portfolio_blog
       MONGODB_COLLECTION: posts
-    ports:
-      - "4000:4000"
+    expose:
+      - "4000"
     depends_on:
-      mongo:
-        condition: service_healthy
+      - mongo
+    networks:
+      - api_network
     healthcheck:
       test:
         [
@@ -27,14 +44,15 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+    restart: unless-stopped
 
   mongo:
     image: mongo:7
     container_name: portfolio-blog-mongo
-    ports:
-      - "27018:27017"
     volumes:
       - mongo-data:/data/db
+    networks:
+      - api_network
     healthcheck:
       test:
         [
@@ -48,6 +66,11 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+    restart: unless-stopped
 
 volumes:
   mongo-data:
+
+networks:
+  api_network:
+    name: api_network
