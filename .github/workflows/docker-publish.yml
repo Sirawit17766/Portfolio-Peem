@@ -89,6 +89,8 @@ jobs:
               exit 1
             fi
             docker-compose pull api
+            docker-compose stop api || true
+            docker-compose rm -f api || true
             docker-compose up -d --no-build
             docker-compose ps
             curl -fsS http://localhost/health
