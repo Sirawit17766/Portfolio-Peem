@@ -1,11 +1,9 @@
-name: Build and Publish Docker Image
+name: CI/CD Build and Deploy API
 
 on:
   push:
     branches:
       - main
-    tags:
-      - "v*"
   workflow_dispatch:
 
 env:
@@ -13,13 +11,15 @@ env:
   DOCKERHUB_NAMESPACE: sirawit17766
 
 jobs:
-  publish:
-    name: Build and push API image
+  build-publish-deploy:
+    name: Build amd64 image, publish version tag, and deploy
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout main branch
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -36,6 +36,19 @@ jobs:
       - name: Build frontend
         run: npm run build
 
+      - name: Create version image tag
+        id: version
+        shell: bash
+        run: |
+          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
+          IMAGE_TAG="v${PACKAGE_VERSION}-${GITHUB_RUN_NUMBER}"
+          IMAGE_REF="${DOCKERHUB_NAMESPACE}/${IMAGE_NAME}:${IMAGE_TAG}"
+
+          echo "image_tag=${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
+          echo "image_ref=${IMAGE_REF}" >> "$GITHUB_OUTPUT"
+          echo "IMAGE_TAG=${IMAGE_TAG}" >> "$GITHUB_ENV"
+          echo "IMAGE_REF=${IMAGE_REF}" >> "$GITHUB_ENV"
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -45,13 +58,53 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push Docker image
+      - name: Build amd64 image and push version tag
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
+          platforms: linux/amd64
           push: true
-          tags: |
-            ${{ env.DOCKERHUB_NAMESPACE }}/${{ env.IMAGE_NAME }}:latest
-            ${{ env.DOCKERHUB_NAMESPACE }}/${{ env.IMAGE_NAME }}:v1
-            ${{ env.DOCKERHUB_NAMESPACE }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
+          tags: ${{ steps.version.outputs.image_ref }}
+
+      - name: Configure SSH
+        shell: bash
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "${{ secrets.SERVER_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: SSH to server, pull uploaded image tag, and go live
+        shell: bash
+        run: |
+          ssh -i ~/.ssh/deploy_key "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" "IMAGE_TAG='${IMAGE_TAG}' bash -s" << 'EOF'
+            set -e
+            cd /root/Portfolio-Peem
+            git fetch origin main
+            git checkout main
+            git pull --ff-only origin main
+            if [ ! -s nginx/certs/origin.pem ] || [ ! -s nginx/certs/origin.key ]; then
+              echo "Missing Cloudflare Origin Certificate files: nginx/certs/origin.pem and nginx/certs/origin.key"
+              exit 1
+            fi
+            docker-compose pull api
+            docker-compose up -d --no-build
+            docker-compose ps
+            curl -fsS http://localhost/health
+          EOF
+
+      - name: Webhook alert success
+        if: success()
+        env:
+          DEPLOY_WEBHOOK_URL: ${{ secrets.DEPLOY_WEBHOOK_URL }}
+        shell: bash
+        run: |
+          if [ -z "${DEPLOY_WEBHOOK_URL}" ]; then
+            echo "DEPLOY_WEBHOOK_URL is not set. Skipping webhook alert."
+            exit 0
+          fi
+
+          curl -fsS -X POST "${DEPLOY_WEBHOOK_URL}" \
+            -H "Content-Type: application/json" \
+            -d "{\"status\":\"success\",\"message\":\"API deployment completed successfully\",\"image\":\"${IMAGE_REF}\",\"branch\":\"main\",\"commit\":\"${GITHUB_SHA}\"}"

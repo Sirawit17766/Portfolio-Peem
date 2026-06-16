@@ -4,6 +4,18 @@
 
 > Domain ที่ตั้งไว้ใน config ตอนนี้คือ `api.zxcvbn.online` ถ้าจะใช้ domain อื่นให้แก้ที่ `nginx/default.conf`
 
+ถ้าต้องการเอกสารสำหรับพรีเซ้น architecture โดยเฉพาะ อ่านไฟล์นี้:
+
+```text
+docs/service-architecture-presentation.md
+```
+
+ถ้าต้องการเอกสาร HTTPS, Cloudflare certificate และ CI/CD อ่านไฟล์นี้:
+
+```text
+docs/https-and-ci-cd.md
+```
+
 ## สิ่งที่ทำไว้ในโปรเจกต์นี้แล้ว
 
 - ปรับ `docker-compose.yml` ให้มี service `api`, `mongo`, และ `nginx`

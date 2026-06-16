@@ -1,0 +1,94 @@
+<mxfile host="app.diagrams.net" modified="2026-06-16T00:00:00.000Z" agent="Codex" version="24.7.17" type="device">
+  <diagram id="ci-cd-pipeline" name="CI CD Pipeline">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="0" y="0" width="1600" height="900" as="geometry" />
+        </mxCell>
+
+        <mxCell id="title" value="CI/CD Pipeline for Blog API" style="text;html=1;strokeColor=none;fillColor=none;fontSize=34;fontStyle=1;fontColor=#0F172A;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="430" y="40" width="740" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="subtitle" value="Push main -&gt; Build linux/amd64 image -&gt; Push version tag -&gt; SSH deploy -&gt; Webhook success" style="text;html=1;strokeColor=none;fillColor=none;fontSize=16;fontColor=#64748B;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="390" y="90" width="820" height="34" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dev" value="Developer&lt;br&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;push code to main&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontColor=#0F172A;fontSize=18;fontStyle=1;arcSize=12;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="245" width="190" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="github" value="GitHub Repository&lt;br&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;Portfolio-Peem&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#475569;fontColor=#0F172A;fontSize=18;fontStyle=1;arcSize=12;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="330" y="245" width="200" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="actions" value="GitHub Actions&lt;br&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;docker-publish.yml&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F3FF;strokeColor=#7C3AED;fontColor=#3B0764;fontSize=18;fontStyle=1;arcSize=12;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="600" y="245" width="220" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="buildSteps" value="CI Steps&lt;br&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;npm ci&lt;br&gt;lint&lt;br&gt;build&lt;br&gt;docker build linux/amd64&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EEF2FF;strokeColor=#4F46E5;fontColor=#1E1B4B;fontSize=18;fontStyle=1;arcSize=12;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="890" y="220" width="210" height="160" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dockerHub" value="Docker Hub&lt;br&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;sirawit17766/portfolio-blog-api&lt;br&gt;version tag only&lt;br&gt;example: v0.0.0-123&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;fontColor=#0C4A6E;fontSize=18;fontStyle=1;arcSize=12;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="235" width="260" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="deployActions" value="Deploy Step&lt;br&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;same workflow&lt;br&gt;uses GitHub Secrets&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#059669;fontColor=#064E3B;fontSize=18;fontStyle=1;arcSize=12;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="600" y="515" width="220" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="secrets" value="GitHub Secrets&lt;br&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;DOCKER_USERNAME&lt;br&gt;DOCKER_PASSWORD&lt;br&gt;SERVER_HOST&lt;br&gt;SERVER_USER&lt;br&gt;SERVER_SSH_KEY&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;fontColor=#7F1D1D;fontSize=16;fontStyle=1;arcSize=12;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="330" y="480" width="200" height="190" as="geometry" />
+        </mxCell>
+
+        <mxCell id="server" value="AWS EC2 Server&lt;br&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;SSH deploy&lt;br&gt;git pull main&lt;br&gt;pull uploaded tag&lt;br&gt;docker-compose up -d&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#D97706;fontColor=#78350F;fontSize=18;fontStyle=1;arcSize=12;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="890" y="500" width="220" height="160" as="geometry" />
+        </mxCell>
+
+        <mxCell id="runtime" value="Running Services&lt;br&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;Nginx&lt;br&gt;Blog API&lt;br&gt;MongoDB&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontColor=#14532D;fontSize=18;fontStyle=1;arcSize=12;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="510" width="220" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="health" value="Health Check + Webhook&lt;br&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;curl /health returns {&quot;ok&quot;:true}&lt;br&gt;send success alert&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#FFFFFF;fontSize=18;fontStyle=1;arcSize=12;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="680" y="735" width="260" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e1" value="git push" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2563EB;strokeWidth=3;endArrow=block;endFill=1;fontSize=13;fontStyle=1;" edge="1" parent="1" source="dev" target="github">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="trigger" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#475569;strokeWidth=3;endArrow=block;endFill=1;fontSize=13;fontStyle=1;" edge="1" parent="1" source="github" target="actions">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="run CI" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#7C3AED;strokeWidth=3;endArrow=block;endFill=1;fontSize=13;fontStyle=1;" edge="1" parent="1" source="actions" target="buildSteps">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="push :version tag" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#0284C7;strokeWidth=3;endArrow=block;endFill=1;fontSize=13;fontStyle=1;" edge="1" parent="1" source="buildSteps" target="dockerHub">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="continue after push" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#059669;strokeWidth=3;endArrow=block;endFill=1;fontSize=13;fontStyle=1;" edge="1" parent="1" source="actions" target="deployActions">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="read secrets" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#EF4444;strokeWidth=2;endArrow=block;endFill=1;fontSize=13;fontStyle=1;dashed=1;" edge="1" parent="1" source="secrets" target="deployActions">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="SSH" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#059669;strokeWidth=3;endArrow=block;endFill=1;fontSize=13;fontStyle=1;" edge="1" parent="1" source="deployActions" target="server">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" value="pull same tag" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#0284C7;strokeWidth=2;endArrow=block;endFill=1;fontSize=13;fontStyle=1;dashed=1;" edge="1" parent="1" source="dockerHub" target="server">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="restart containers" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#D97706;strokeWidth=3;endArrow=block;endFill=1;fontSize=13;fontStyle=1;" edge="1" parent="1" source="server" target="runtime">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" value="verify" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#0F172A;strokeWidth=3;endArrow=block;endFill=1;fontSize=13;fontStyle=1;" edge="1" parent="1" source="server" target="health">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

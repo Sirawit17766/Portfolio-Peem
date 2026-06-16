@@ -261,6 +261,24 @@ Service deployment guide for API + MongoDB + Nginx + Cloudflare:
 docs/service-deploy.md
 ```
 
+Presentation-ready architecture diagram and explanation:
+
+```text
+docs/service-architecture-presentation.md
+```
+
+HTTPS, Cloudflare certificate, and CI/CD guide:
+
+```text
+docs/https-and-ci-cd.md
+```
+
+CI/CD pipeline diagram for draw.io:
+
+```text
+docs/ci-cd-pipeline.drawio
+```
+
 ### Files
 
 - `Dockerfile` builds the API container
