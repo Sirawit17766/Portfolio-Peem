@@ -279,6 +279,12 @@ CI/CD pipeline diagram for draw.io:
 docs/ci-cd-pipeline.drawio
 ```
 
+MongoDB volume persistence and external access guide:
+
+```text
+docs/mongodb-volume-and-external-access.md
+```
+
 ### Files
 
 - `Dockerfile` builds the API container

@@ -168,8 +168,10 @@ jobs:
             docker-compose pull api
             docker-compose stop nginx || true
             docker-compose stop api || true
+            docker-compose stop mongo || true
             docker-compose rm -f nginx || true
             docker-compose rm -f api || true
+            docker-compose rm -f mongo || true
             docker-compose up -d --no-build
             docker-compose ps
             for attempt in $(seq 1 30); do

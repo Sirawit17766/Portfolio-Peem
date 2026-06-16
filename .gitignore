@@ -35,3 +35,7 @@ nginx/certs/*.pem
 nginx/certs/*.key
 nginx/certs/*.crt
 nginx/certs/*.csr
+
+# Local MongoDB bind-mount data
+mongo-data/
+mongo-data-*/
