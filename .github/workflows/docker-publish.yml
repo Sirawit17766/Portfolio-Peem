@@ -10,6 +10,7 @@ env:
   IMAGE_NAME: portfolio-blog-api
   DOCKERHUB_NAMESPACE: sirawit17766
   API_URL: https://api.zxcvbn.online/health
+  DEPLOY_GIF_URL: https://media.giphy.com/media/13HgwGsXF0aiGY/giphy.gif
 
 jobs:
   build-publish-deploy:
@@ -76,7 +77,8 @@ jobs:
                   { "name": "Version Tag", "value": "${IMAGE_TAG}", "inline": true },
                   { "name": "Image", "value": "\`${IMAGE_REF}\`", "inline": false },
                   { "name": "GitHub Actions", "value": "[Open run](${RUN_URL})", "inline": false }
-                ]
+                ],
+                "image": { "url": "${DEPLOY_GIF_URL}" }
               }
             ]
           }
@@ -129,7 +131,8 @@ jobs:
                   { "name": "Version Tag", "value": "${IMAGE_TAG}", "inline": true },
                   { "name": "Architecture", "value": "linux/amd64", "inline": true },
                   { "name": "GitHub Actions", "value": "[Open run](${RUN_URL})", "inline": false }
-                ]
+                ],
+                "image": { "url": "${DEPLOY_GIF_URL}" }
               }
             ]
           }
@@ -160,6 +163,8 @@ jobs:
               echo "Missing Cloudflare Origin Certificate files: nginx/certs/origin.pem and nginx/certs/origin.key"
               exit 1
             fi
+            openssl x509 -in nginx/certs/origin.pem -noout -subject -issuer -dates
+            openssl pkey -in nginx/certs/origin.key -noout
             docker-compose pull api
             docker-compose stop nginx || true
             docker-compose stop api || true
@@ -167,7 +172,16 @@ jobs:
             docker-compose rm -f api || true
             docker-compose up -d --no-build
             docker-compose ps
-            curl -fsS http://localhost/health
+            for attempt in $(seq 1 30); do
+              if curl -fsSk https://localhost/health; then
+                exit 0
+              fi
+              echo "Waiting for Nginx/API health check... attempt ${attempt}/30"
+              sleep 2
+            done
+            docker-compose ps
+            docker-compose logs --tail=80 nginx
+            exit 1
           EOF
 
       - name: Webhook alert success
@@ -198,7 +212,8 @@ jobs:
                   { "name": "Image", "value": "\`${IMAGE_REF}\`", "inline": false },
                   { "name": "API Health", "value": "[${API_URL}](${API_URL})", "inline": false },
                   { "name": "GitHub Actions", "value": "[Open run](${RUN_URL})", "inline": false }
-                ]
+                ],
+                "image": { "url": "${DEPLOY_GIF_URL}" }
               }
             ]
           }
@@ -237,7 +252,8 @@ jobs:
                   { "name": "Version Tag", "value": "${IMAGE_TAG_VALUE}", "inline": true },
                   { "name": "Image", "value": "\`${IMAGE_REF_VALUE}\`", "inline": false },
                   { "name": "GitHub Actions", "value": "[Open failed run](${RUN_URL})", "inline": false }
-                ]
+                ],
+                "image": { "url": "${DEPLOY_GIF_URL}" }
               }
             ]
           }
