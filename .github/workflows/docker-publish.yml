@@ -9,6 +9,7 @@ on:
 env:
   IMAGE_NAME: portfolio-blog-api
   DOCKERHUB_NAMESPACE: sirawit17766
+  API_URL: https://api.zxcvbn.online/health
 
 jobs:
   build-publish-deploy:
@@ -49,6 +50,42 @@ jobs:
           echo "IMAGE_TAG=${IMAGE_TAG}" >> "$GITHUB_ENV"
           echo "IMAGE_REF=${IMAGE_REF}" >> "$GITHUB_ENV"
 
+      - name: Webhook alert deploy started
+        env:
+          DEPLOY_WEBHOOK_URL: ${{ secrets.DEPLOY_WEBHOOK_URL }}
+        shell: bash
+        run: |
+          if [ -z "${DEPLOY_WEBHOOK_URL}" ]; then
+            echo "DEPLOY_WEBHOOK_URL is not set. Skipping webhook alert."
+            exit 0
+          fi
+
+          RUN_URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          cat > discord-payload.json <<EOF
+          {
+            "username": "GitHub Actions",
+            "content": "🚀 Deploy started: ${IMAGE_TAG}",
+            "embeds": [
+              {
+                "title": "🚀 Deployment Started",
+                "description": "กำลัง build image, push ไป Docker Hub, แล้ว deploy เข้า server",
+                "color": 3447003,
+                "fields": [
+                  { "name": "Repository", "value": "${GITHUB_REPOSITORY}", "inline": true },
+                  { "name": "Branch", "value": "main", "inline": true },
+                  { "name": "Version Tag", "value": "${IMAGE_TAG}", "inline": true },
+                  { "name": "Image", "value": "\`${IMAGE_REF}\`", "inline": false },
+                  { "name": "GitHub Actions", "value": "[Open run](${RUN_URL})", "inline": false }
+                ]
+              }
+            ]
+          }
+          EOF
+
+          curl -fsS -X POST "${DEPLOY_WEBHOOK_URL}" \
+            -H "Content-Type: application/json" \
+            --data @discord-payload.json
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -66,6 +103,41 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: ${{ steps.version.outputs.image_ref }}
+
+      - name: Webhook alert image pushed
+        env:
+          DEPLOY_WEBHOOK_URL: ${{ secrets.DEPLOY_WEBHOOK_URL }}
+        shell: bash
+        run: |
+          if [ -z "${DEPLOY_WEBHOOK_URL}" ]; then
+            echo "DEPLOY_WEBHOOK_URL is not set. Skipping webhook alert."
+            exit 0
+          fi
+
+          RUN_URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          cat > discord-payload.json <<EOF
+          {
+            "username": "GitHub Actions",
+            "content": "📦 Docker image pushed: ${IMAGE_TAG}",
+            "embeds": [
+              {
+                "title": "📦 Image Published",
+                "description": "Docker image ถูก build เป็น linux/amd64 และ push ขึ้น Docker Hub แล้ว กำลัง deploy เข้า server ต่อ",
+                "color": 16776960,
+                "fields": [
+                  { "name": "Image", "value": "\`${IMAGE_REF}\`", "inline": false },
+                  { "name": "Version Tag", "value": "${IMAGE_TAG}", "inline": true },
+                  { "name": "Architecture", "value": "linux/amd64", "inline": true },
+                  { "name": "GitHub Actions", "value": "[Open run](${RUN_URL})", "inline": false }
+                ]
+              }
+            ]
+          }
+          EOF
+
+          curl -fsS -X POST "${DEPLOY_WEBHOOK_URL}" \
+            -H "Content-Type: application/json" \
+            --data @discord-payload.json
 
       - name: Configure SSH
         shell: bash
@@ -107,6 +179,68 @@ jobs:
             exit 0
           fi
 
+          RUN_URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          cat > discord-payload.json <<EOF
+          {
+            "username": "GitHub Actions",
+            "content": "✅ Deploy สำเร็จ! ${IMAGE_TAG}",
+            "embeds": [
+              {
+                "title": "✅ Deployment Successful!",
+                "description": "Build, push Docker image, deploy to server, and health check completed.",
+                "color": 5763719,
+                "fields": [
+                  { "name": "Repository", "value": "${GITHUB_REPOSITORY}", "inline": true },
+                  { "name": "Branch", "value": "main", "inline": true },
+                  { "name": "Version Tag", "value": "${IMAGE_TAG}", "inline": true },
+                  { "name": "Image", "value": "\`${IMAGE_REF}\`", "inline": false },
+                  { "name": "API Health", "value": "[${API_URL}](${API_URL})", "inline": false },
+                  { "name": "GitHub Actions", "value": "[Open run](${RUN_URL})", "inline": false }
+                ]
+              }
+            ]
+          }
+          EOF
+
           curl -fsS -X POST "${DEPLOY_WEBHOOK_URL}" \
             -H "Content-Type: application/json" \
-            -d "{\"status\":\"success\",\"message\":\"API deployment completed successfully\",\"image\":\"${IMAGE_REF}\",\"branch\":\"main\",\"commit\":\"${GITHUB_SHA}\"}"
+            --data @discord-payload.json
+
+      - name: Webhook alert failed
+        if: failure()
+        env:
+          DEPLOY_WEBHOOK_URL: ${{ secrets.DEPLOY_WEBHOOK_URL }}
+        shell: bash
+        run: |
+          if [ -z "${DEPLOY_WEBHOOK_URL}" ]; then
+            echo "DEPLOY_WEBHOOK_URL is not set. Skipping webhook alert."
+            exit 0
+          fi
+
+          RUN_URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          IMAGE_TAG_VALUE="${IMAGE_TAG:-not-created}"
+          IMAGE_REF_VALUE="${IMAGE_REF:-not-created}"
+          cat > discord-payload.json <<EOF
+          {
+            "username": "GitHub Actions",
+            "content": "❌ Deploy ล้มเหลว: ${IMAGE_TAG_VALUE}",
+            "embeds": [
+              {
+                "title": "❌ Deployment Failed",
+                "description": "Pipeline หยุดก่อน deploy สำเร็จ ดู log ใน GitHub Actions เพื่อแก้จุดที่พัง",
+                "color": 15548997,
+                "fields": [
+                  { "name": "Repository", "value": "${GITHUB_REPOSITORY}", "inline": true },
+                  { "name": "Branch", "value": "main", "inline": true },
+                  { "name": "Version Tag", "value": "${IMAGE_TAG_VALUE}", "inline": true },
+                  { "name": "Image", "value": "\`${IMAGE_REF_VALUE}\`", "inline": false },
+                  { "name": "GitHub Actions", "value": "[Open failed run](${RUN_URL})", "inline": false }
+                ]
+              }
+            ]
+          }
+          EOF
+
+          curl -fsS -X POST "${DEPLOY_WEBHOOK_URL}" \
+            -H "Content-Type: application/json" \
+            --data @discord-payload.json
