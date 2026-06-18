@@ -1,9 +1,11 @@
 import { Router } from "express";
 
-export const createAnalyticsRouter = (postStore) => {
+const passThrough = (_request, _response, next) => next();
+
+export const createAnalyticsRouter = (postStore, { cache = passThrough } = {}) => {
   const router = Router();
 
-  router.get("/top-posts", async (_request, response, next) => {
+  router.get("/top-posts", cache, async (_request, response, next) => {
     try {
       const posts = await postStore.topPosts(3);
       response.json({ data: posts });

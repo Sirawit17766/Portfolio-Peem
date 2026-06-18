@@ -10,6 +10,3 @@ dist
 Dockerfile
 docker-compose.yml
 README.md
-public
-src
-api

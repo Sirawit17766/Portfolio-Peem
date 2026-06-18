@@ -24,10 +24,15 @@ const validatePostInput = ({ id, title, content }) => {
   return errors;
 };
 
-export const createPostsRouter = (postStore) => {
+const passThrough = (_request, _response, next) => next();
+
+export const createPostsRouter = (postStore, {
+  cache = passThrough,
+  requireAdmin = passThrough,
+} = {}) => {
   const router = Router();
 
-  router.get("/", async (_request, response, next) => {
+  router.get("/", cache, async (_request, response, next) => {
     try {
       const posts = await postStore.list();
       response.json({ data: posts });
@@ -36,7 +41,7 @@ export const createPostsRouter = (postStore) => {
     }
   });
 
-  router.post("/", async (request, response, next) => {
+  router.post("/", requireAdmin, async (request, response, next) => {
     try {
       const input = cleanPostInput(request.body);
       const errors = validatePostInput(input);
@@ -83,7 +88,7 @@ export const createPostsRouter = (postStore) => {
     }
   });
 
-  router.delete("/:id", async (request, response, next) => {
+  router.delete("/:id", requireAdmin, async (request, response, next) => {
     try {
       const deleted = await postStore.deleteById(request.params.id);
 
